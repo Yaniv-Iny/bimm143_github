@@ -1,0 +1,76 @@
+---
+title: "Class 10 Comparative Structural Analysis"
+author: "Yaniv Iny (PID:A18090586)"
+format: html
+---
+
+## Comparative structure analysis of Adenylate Kinase
+
+Here we run through a complete "pipeline" of strucutre analysis that begins with a single sequence identifierf and ends in a PCA analysis. 
+
+```{r}
+library(bio3d)
+```
+
+## Step 1. retrieve a sequence for the protien we are interested in. We willl take ADK "1ake_A"
+
+```{r}
+id <- "1ake_A"
+aa <- get.seq(id)
+aa
+```
+ ## STEP 2 Blast search 
+Run a BLAST search of the PDB for all related sequences to our input `aa`
+
+```{r}
+blast <- blast.pdb(aa)
+```
+
+```{r}
+hits <- plot(blast)
+```
+## Step 3 Download all Structures
+These are our "top hits" i.e. all the structures in the pDB databe related to our input sequence. 
+
+```{r}
+hits$pdb.id
+```
+
+```{r}
+# Download related PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+## Step 4 align and superimpose
+
+```{r}
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+
+```{r}
+pdbs
+```
+
+## Step 5. PCA 
+
+Let's use our old friend PCA to make sense of these confusing, complicated structure relationships. 
+
+```{r}
+pc <- pca(pdbs)
+plot(pc)
+```
+
+lets make a trajectory (or movie)of the main conformation changes captures by PC1. We will use the `mktrj()` function fot this... 
+
+```{r}
+mktrj(pc, file="pca_results.pdb")
+```
+
+Back of the envelope comparison of PDB size to Uniprot
+
+```{r}
+uniprot <- 253206171
+pdb <- 231029
+231029/253206171 * 100
+```
+
