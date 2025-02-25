@@ -1,0 +1,397 @@
+---
+title: "Class 7: Machine Learning 1"
+author: "Yaniv Iny (PID:A18090586"
+format: pdf
+---
+
+Today we will explore unsupervised machine learning methods including clustering and dimensionality reduction methods.
+
+Let's start by making up some data (where we know there are clear groups) that we cans use to test out different clustering methods.
+
+We can use the `rnorm()` function to help us here.
+```{r}
+hist( rnorm(n=3000, mean=3))
+```
+
+Maka data with two "clusters"
+
+```{r}
+rnorm(30, mean=-3)
+rnorm(30, mean = +3)
+```
+
+
+```{r}
+x<- c(rnorm(30, mean=-3),
+rnorm(30, mean = +3))
+
+z <- cbind(x=x,rev(x))
+head(z)
+
+plot(z)
+```
+How big is `z`
+
+```{r}
+k<- kmeans(z, centers = 2)
+k
+```
+
+
+
+## K-means clustering
+
+The main function in "base" R for K-means clustering is called `kmeans()`
+
+```{r}
+k <- kmeans(z, centers = 2)
+k
+```
+
+```{r}
+attributes(k)
+```
+
+> Q. How many points lie in each cluster
+
+```{r}
+k$size
+```
+
+> Q. what componenet of our results tells us about the cluster membership (i.e which point likes in which cluster)?
+
+```{r}
+k$cluster
+```
+
+> Q. Center of each cluster?
+
+```{r}
+k$centers
+```
+
+> Q. Put this result info together and make a little "base R" plot of our clustering results. Also add the cluster center points to this plot.
+
+```{r}
+plot(z, col = "blue")
+```
+
+```{r}
+plot(z, col=c("blue", "red"))
+```
+You can color by number
+
+```{r}
+plot(z, col =c(1,2))
+```
+
+Plots colored by cluster membership:
+
+```{r}
+plot(z, col=k$cluster)
+points(k$centers, col="blue", pch=15)
+```
+
+> Q. Run kmeans on our input `z` and define 4 clusters making the same result vizualization plot as above(plot of z colored by cluster membership).
+
+```{r}
+head(z)
+```
+
+
+```{r}
+k4 <- kmeans(z, centers=4)
+plot(z, col=k4$cluster)
+points(k4$centers, col="purple")
+```
+
+
+## Hierarchical Clustering
+
+The main function in base R for this is called `hclust()`
+it will take as input a distance matrix (key poiny is that you can't just give your "raw" data as input - you have to first calculate a distance matrix from your data).
+
+```{r}
+d <- dist(z)
+hc <- hclust(d)
+hc
+```
+
+
+```{r}
+plot(hc)
+abline(h=10, col="red")
+```
+
+Once I inspect the Dendrogram I can "cut" the tree to yield my froupings or clusters. The function to do this is called `cutree()`
+
+
+```{r}
+cutree(hc, h=10)
+```
+
+
+```{r}
+grps <- cutree(hc, h=10)
+```
+ 
+```{r}
+plot(z, col=grps)
+```
+ 
+Lets examine some silly 17-dimensional data detailing good consumption in the UK(England,Scotland,Wales, and N.Ireland). Are these countries eating habits different or similar and if so how.
+
+## Data import 
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+x
+```
+
+> Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions? 
+
+we can use the dim() function, which will return both the number of rows and columns in a data frame. Alternatively, we can use nrow() for rows and ncol() for columns separately. There are 17 rows, 4 columns, and 17+4 columns + rows.
+
+```{r}
+nrow(x)
+ncol(x)
+dim(x)
+```
+
+>Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+
+The second approach, using row.names=1 when reading the CSV, is cleaner and more efficient, especially if you're working with a large dataset where you want to avoid mistakes from manually altering the data frame later.
+
+The second approach is more robust as it eliminates the chance of modifying the dataset unintentionally.
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+> Q3. Changing what optional argument in the above barplot() function results in the following plot?
+
+Changing the besides from True to False results in the bar graph.
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+> Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+
+ If a point lies on the diagonal of a pairwise plot, it indicates that the two variables being compared are perfectly correlated with each other, meaning they change in tandem. In this case, for the pairwise plots, the diagonal shows that the variables are compared against themselves.
+
+```{r}
+pairs(x, col= rainbow(nrow(x)), pch=16)
+```
+
+> Q6. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+
+Looking at this data set we can see that northern Ireland has a significantly different food consumption thatn the other countries, although it is still hard to see this on these type of plots as the details are not very easily understod.
+
+Looking at these types of "pairwise plots" cam be helpful but it does not scale well and is much more time consuming.
+There has got to be a better way...
+
+## PCA to the rescue! 
+
+The main function for PCA in base R is called `prcomp()`. This function wants transpose of our input data - i.e the important foods in as columns and the countries as rows.
+
+
+```{r}
+pca<- prcomp(t(x))
+summary(pca)
+```
+
+
+
+Lets see what is in our result object `pca`
+
+```{r}
+attributes(pca)
+```
+
+The `pca$x` results object is wehre I will focus first as this details how the countries are related to eachother in terms of our new "axis" (aka "PCs"," eigenvectors", etc.)
+
+```{r}
+head(pca$x)
+```
+
+> Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], colnames(x))
+```
+
+
+```{r}
+plot(pca$x[,1], pca$x[,2],pch=16, col = c("orange", "red","blue","green"))
+```
+> Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500))
+text(pca$x[,1], pca$x[,2], labels=rownames(pca$x), pos=4, cex=0.7)
+```
+
+> Q8. Customize your plot so that the colors of the country names match the colors in our UK and Ireland map and table at start of this document.
+
+```{r}
+country_vector <- c("UK", "Ireland", "Scotland", "Wales", "Northern Ireland")
+```
+
+```{r}
+country_colors <- c("UK" = "red", 
+                    "Ireland" = "green", 
+                    "Scotland" = "blue", 
+                    "Wales" = "purple", 
+                    "Northern Ireland" = "orange")
+```
+
+```{r}
+countries <- factor(country_vector)
+```
+
+```{r}
+point_colors <- country_colors[countries]
+```
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500), col=point_colors, pch=16) 
+text(pca$x[,1], pca$x[,2], labels=rownames(pca$x), col=point_colors, pos=4, cex=0.7)
+
+```
+
+```{r}
+v <- round( pca$sdev^2/sum(pca$sdev^2) * 100 )
+v
+```
+
+```{r}
+z <- summary(pca)
+z$importance
+```
+
+```{r}
+barplot(v, xlab="Principal Component", ylab="Percent Variation")
+```
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+> Q9: Generate a similar ‘loadings plot’ for PC2. What two food groups feature prominantely and what does PC2 maninly tell us about?
+
+```{r}
+par(mar=c(10, 3, 0.35, 0))  
+```
+
+```{r}
+bar_midpoints <- barplot(pca$rotation[,2], las=2, col="skyblue", 
+                         main="PC2 Loadings", ylab="Loadings")
+```
+```{r}
+dev.flush()
+```
+
+
+
+
+## PCA OF RNA SEQ DATA
+
+n this example, a small RNA-seq count data set (available from the class website (expression.csv and the tinyurl short link: “https://tinyurl.com/expression-CSV” ) is read into a data frame called rna.data where the columns are individual samples (i.e. cells) and rows are measurements taken for all the samples (i.e. genes).
+
+```{r}
+url2 <- "https://tinyurl.com/expression-CSV"
+rna.data <- read.csv(url2, row.names=1)
+head(rna.data)
+```
+
+> Q10: How many genes and samples are in this data set?
+
+There are 10 samples, and there are, 100 genes.
+
+```{r}
+ncol(rna.data)
+```
+
+```{r}
+nrow(rna.data)
+```
+
+```{r}
+pca <- prcomp(t(rna.data), scale=TRUE)
+```
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2")
+```
+```{r}
+summary(pca)
+```
+
+```{r}
+plot(pca, main="Quick scree plot")
+```
+
+```{r}
+pca.var <- pca$sdev^2
+```
+```{r}
+pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+pca.var.per
+```
+```{r}
+barplot(pca.var.per, main="Scree Plot", 
+        names.arg = paste0("PC", 1:10),
+        xlab="Principal Component", ylab="Percent Variation")
+```
+
+```{r}
+colvec <- colnames(rna.data)
+colvec[grep("wt", colvec)] <- "red"
+colvec[grep("ko", colvec)] <- "blue"
+
+plot(pca$x[,1], pca$x[,2], col=colvec, pch=16,
+     xlab=paste0("PC1 (", pca.var.per[1], "%)"),
+     ylab=paste0("PC2 (", pca.var.per[2], "%)"))
+
+text(pca$x[,1], pca$x[,2], labels = colnames(rna.data), pos=c(rep(4,5), rep(2,5)))
+```
+
+USING GGPLOT 
+
+```{r}
+library(ggplot2)
+
+df <- as.data.frame(pca$x)
+```
+
+```{r}
+ggplot(df) + 
+  aes(PC1, PC2) + 
+  geom_point()
+```
+
+```{r}
+df$samples <- colnames(rna.data) 
+df$condition <- substr(colnames(rna.data),1,2)
+
+```
+
+```{r}
+p <- ggplot(df) + 
+        aes(PC1, PC2, label=samples, col=condition) + 
+        geom_label(show.legend = FALSE)
+p
+```
+
+```{r}
+p + labs(title="PCA of RNASeq Data",
+       subtitle = "PC1 clealy seperates wild-type from knock-out samples",
+       x=paste0("PC1 (", pca.var.per[1], "%)"),
+       y=paste0("PC2 (", pca.var.per[2], "%)"),
+       caption="Class example data") +
+     theme_bw()
+```
+
