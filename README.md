@@ -4,7 +4,7 @@ My classwork from W25 [BIMM 143](https://bioboot.github.io/bimm143_W25/) at UC S
 
 - Class04 [Introduction to R](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/class4/class4.html)
 
-- Class05 [Data vizualization with ggplot](https://htmlpreview.github.io/?)
+- Class05 [Data vizualization with ggplot](https://htmlpreview.github.io/?file:///Users/yaniviny/Desktop/BIMM143/bimm143_github/Class05/class05.html)
 
 - Class06 [R functions](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/Class06_files/Class06.html)
 
@@ -18,7 +18,7 @@ My classwork from W25 [BIMM 143](https://bioboot.github.io/bimm143_W25/) at UC S
 
 - Class11 [Structure prediction with AlphaFold2](
 
-- Class12 [Genome informatics and high throughput sequencing]
+- Class12 [Genome informatics and high throughput sequencing](
 
 - Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/Class13/Class13.html)
 
