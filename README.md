@@ -16,10 +16,6 @@ My classwork from W25 [BIMM 143](https://bioboot.github.io/bimm143_W25/) at UC S
 
 - Class10 [Structural Bioinformatics](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/Class%2010/Class%2010.html)
 
-- Class11 [Structure prediction with AlphaFold2](
-
-- Class12 [Genome informatics and high throughput sequencing](
-
 - Class13 [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/Class13/Class13.html)
 
 - Class14 [RNA-Seq mini project](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/Class%2014%20mini%20project/Class%2014%20Mini%20Project.html)
