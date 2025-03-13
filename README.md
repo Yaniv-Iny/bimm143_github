@@ -2,7 +2,7 @@
 
 My classwork from W25 [BIMM 143](https://bioboot.github.io/bimm143_W25/) at UC San Diego
 
-- Class04 [Introduction to R](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/class4/class4.html))
+- Class04 [Introduction to R](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Yaniv-Iny/bimm143_github/refs/heads/main/class4/class4.html)
 
 - Class05 [Data vizualization with ggplot](https://htmlpreview.github.io/?)
 
